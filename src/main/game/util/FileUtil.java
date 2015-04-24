@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 import main.game.MainTestGame;
 
-public class FileUtils {
+public class FileUtil {
 
     public static BufferedImage loadImage(String name) {
         try {

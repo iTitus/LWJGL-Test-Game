@@ -2,7 +2,7 @@ package main.game.render.impl;
 
 import main.game.render.IShader;
 import main.game.render.RenderManager;
-import main.game.util.FileUtils;
+import main.game.util.FileUtil;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -39,7 +39,7 @@ public class Shader implements IShader {
         if (shaderID == 0) {
             throw new RuntimeException("could not created shader of type " + glVertexShader + " for file " + string + ". " + GL20.glGetProgramInfoLog(programID, GL20.glGetShaderi(shaderID, GL20.GL_INFO_LOG_LENGTH)));
         }
-        String code = FileUtils.readShaderFileAsString(string);
+        String code = FileUtil.readShaderFileAsString(string);
         GL20.glShaderSource(shaderID, code);
         GL20.glCompileShader(shaderID);
         int shaderStatus = GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS);

@@ -10,9 +10,9 @@ import java.util.Map;
 import main.game.render.ISprite;
 import main.game.render.ISpriteLoader;
 import main.game.render.RenderManager;
-import main.game.util.FileUtils;
+import main.game.util.BufferUtil;
+import main.game.util.FileUtil;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -45,32 +45,6 @@ public final class SpriteLoader implements ISpriteLoader {
     private SpriteLoader() {
     }
 
-    private ByteBuffer getByteBuffer(BufferedImage image) {
-        if (image == null) {
-            return null;
-        }
-        int width = image.getWidth();
-        int height = image.getHeight();
-        if (width <= 0 || height <= 0) {
-            return null;
-        }
-        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
-        int[] pixels = new int[width * height];
-        image.getRGB(0, 0, width, height, pixels, 0, width);
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = pixels[y * width + x];
-                buffer.put((byte) (pixel >> 16 & 0xFF));
-                buffer.put((byte) (pixel >> 8 & 0xFF));
-                buffer.put((byte) (pixel & 0xFF));
-                buffer.put((byte) (pixel >> 24 & 0xFF));
-            }
-        }
-
-        buffer.flip();
-        return buffer;
-    }
-
     @Override
     public List<ISprite> getRegisteredSprites() {
         return sprites;
@@ -84,8 +58,8 @@ public final class SpriteLoader implements ISpriteLoader {
             sprites.add(sprite);
             return sprite;
         } else {
-            BufferedImage image = FileUtils.loadImage(path);
-            ByteBuffer buffer = getByteBuffer(image);
+            BufferedImage image = FileUtil.loadImage(path);
+            ByteBuffer buffer = BufferUtil.getByteBuffer(image);
             int textureID = RenderManager.getNewTextureID();
             setupImage(textureID, buffer, image.getWidth(), image.getHeight());
             loadedImages.put(path, new ImageData(textureID, image.getWidth(), image.getHeight()));
@@ -103,8 +77,8 @@ public final class SpriteLoader implements ISpriteLoader {
             sprites.add(sprite);
             return sprite;
         } else {
-            BufferedImage image = FileUtils.loadImage(path);
-            ByteBuffer buffer = getByteBuffer(image);
+            BufferedImage image = FileUtil.loadImage(path);
+            ByteBuffer buffer = BufferUtil.getByteBuffer(image);
             int textureID = RenderManager.getNewTextureID();
             setupImage(textureID, buffer, image.getWidth(), image.getHeight());
             loadedImages.put(path, new ImageData(textureID, image.getWidth(), image.getHeight()));
@@ -116,18 +90,14 @@ public final class SpriteLoader implements ISpriteLoader {
 
     @Override
     public ISprite loadSprite(String path, int startX, int startY, int sizeX, int sizeY) {
-        System.out.println("#######################");
-        System.out.println(startX + " | " + startY + " | " + sizeX + " | " + sizeY);
         ImageData data = loadedImages.get(path);
         if (data != null) {
-            System.out.println(path + " is already loaded!");
             ISprite sprite = new Sprite(data.textureID, data.width, data.height, startX, startY, sizeX, sizeY);
             sprites.add(sprite);
             return sprite;
         } else {
-            System.out.println(path + " is NOT already loaded!");
-            BufferedImage image = FileUtils.loadImage(path);
-            ByteBuffer buffer = getByteBuffer(image);
+            BufferedImage image = FileUtil.loadImage(path);
+            ByteBuffer buffer = BufferUtil.getByteBuffer(image);
             int textureID = RenderManager.getNewTextureID();
             setupImage(textureID, buffer, image.getWidth(), image.getHeight());
             loadedImages.put(path, new ImageData(textureID, image.getWidth(), image.getHeight()));

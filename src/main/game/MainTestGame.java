@@ -1,5 +1,7 @@
 package main.game;
 
+import java.nio.ByteBuffer;
+
 import javax.imageio.ImageIO;
 
 import main.game.reference.GameLib;
@@ -8,6 +10,8 @@ import main.game.render.ISprite;
 import main.game.render.RenderManager;
 import main.game.render.impl.SpriteLoader;
 import main.game.tile.Tile;
+import main.game.util.BufferUtil;
+import main.game.util.FileUtil;
 import main.game.world.World;
 
 import org.lwjgl.LWJGLException;
@@ -30,6 +34,7 @@ public class MainTestGame {
         Display.setFullscreen(GameManger.isFullscreen());
         Display.setDisplayMode(getPreferredDisplayMode());
         Display.setTitle(GameLib.TITLE);
+        Display.setIcon(getIconArray());
         Display.setVSyncEnabled(GameManger.isVSyncEnabled());
         Display.setResizable(false);
         Display.create();
@@ -50,16 +55,16 @@ public class MainTestGame {
         FontRenderer.drawString(1, GameLib.HEIGHT + 3, "FPS: " + fps);
     }
 
-    private static void end() {
-        Display.destroy();
-    }
-
     public static double getDelta() {
         return delta;
     }
 
     public static int getFPS() {
         return fps;
+    }
+
+    private static ByteBuffer[] getIconArray() {
+        return new ByteBuffer[] { BufferUtil.getByteBuffer(FileUtil.loadImage("icon")) };
     }
 
     private static DisplayMode getPreferredDisplayMode() throws LWJGLException {
@@ -80,7 +85,7 @@ public class MainTestGame {
         return Sys.getTime() * 1000 / Sys.getTimerResolution();
     }
 
-    private static void handleInput() {
+    private static void handleInput() throws LWJGLException {
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
                 GameManger.setRunning(false);
@@ -93,8 +98,18 @@ public class MainTestGame {
 
         while (Mouse.next()) {
             if (Mouse.getEventButtonState() && Mouse.getEventButton() == 0) {
-                System.out.println(Mouse.getEventX() + " - " + Mouse.getEventY());
+                System.out.println(Mouse.getEventX() - GameManger.getOffsetX() + " - " + (Mouse.getEventY() - GameManger.getOffsetY()));
             }
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_F11)) {
+            GameManger.setFullscreen(!GameManger.isFullscreen());
+            Display.setFullscreen(GameManger.isFullscreen());
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_F12)) {
+            GameManger.setVsyncEnabled(!GameManger.isVSyncEnabled());
+            Display.setVSyncEnabled(GameManger.isVSyncEnabled());
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -140,7 +155,7 @@ public class MainTestGame {
         createDisplay();
         setup();
         start();
-        end();
+        stop();
     }
 
     private static void setup() {
@@ -152,12 +167,11 @@ public class MainTestGame {
 
         GameManger.setWorld(new World(64, 64));
 
-        // GameManger.getWorld().genTestWorld();
-        GameManger.getWorld().genDebugWorld();
+        GameManger.getWorld().genTestWorld();
 
     }
 
-    private static void start() {
+    private static void start() throws LWJGLException {
 
         long now = 0L;
         int frameCounter = 0;
@@ -185,8 +199,6 @@ public class MainTestGame {
             frameCounter++;
 
         }
-
-        stop();
 
     }
 

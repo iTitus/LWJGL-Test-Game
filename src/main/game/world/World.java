@@ -24,16 +24,6 @@ public class World {
         }
     }
 
-    public void genDebugWorld() {
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                setTileAt(x, y, Tile.air);
-            }
-        }
-        setTileAt(0, 0, Tile.stone);
-        setTileAt(16, 16, Tile.grass);
-    }
-
     public int getSizeX() {
         return sizeX;
     }
@@ -59,7 +49,7 @@ public class World {
     }
 
     public void update() {
-        // setTileAt(rand.nextInt(sizeX), rand.nextInt(sizeY), Math.random() >= 0.5 ? Tile.grass : Tile.stone);
+        setTileAt(rand.nextInt(sizeX), rand.nextInt(sizeY), Math.random() >= 0.5 ? Tile.grass : Tile.stone);
     }
 
 }

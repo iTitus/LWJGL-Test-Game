@@ -37,7 +37,7 @@ public class TileSimple extends Tile {
 
     @Override
     public void loadSprites(ISpriteLoader loader) {
-        sprite = loader.loadSprite(TileRenderer.TILE_SHEET, (sheetPosition * TileRenderer.TILE_SIZE) % TileRenderer.TILE_SHEET_SIZE, (sheetPosition * TileRenderer.TILE_SIZE) / TileRenderer.TILE_SHEET_SIZE, TileRenderer.TILE_SIZE, TileRenderer.TILE_SIZE);
+        sprite = loader.loadSprite(TileRenderer.TILE_SHEET, sheetPosition * TileRenderer.TILE_SIZE % TileRenderer.TILE_SHEET_SIZE, sheetPosition * TileRenderer.TILE_SIZE / TileRenderer.TILE_SHEET_SIZE, TileRenderer.TILE_SIZE, TileRenderer.TILE_SIZE);
     }
 
 }
