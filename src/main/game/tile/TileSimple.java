@@ -6,11 +6,12 @@ import main.game.render.TileRenderer;
 
 public class TileSimple extends Tile {
 
-    private final int id, sheetPosition;
+    private final byte id;
+    private final int sheetPosition;
     private ISprite sprite;
     private final String tileName;
 
-    public TileSimple(int id, String tileName, int sheetPosition) {
+    public TileSimple(byte id, String tileName, int sheetPosition) {
         this.id = id;
         this.tileName = tileName;
         this.sheetPosition = sheetPosition;
@@ -26,7 +27,7 @@ public class TileSimple extends Tile {
     }
 
     @Override
-    public int getTileID() {
+    public byte getTileID() {
         return id;
     }
 
@@ -37,7 +38,7 @@ public class TileSimple extends Tile {
 
     @Override
     public void loadSprites(ISpriteLoader loader) {
-        sprite = loader.loadSprite(TileRenderer.TILE_SHEET, sheetPosition * TileRenderer.TILE_SIZE % TileRenderer.TILE_SHEET_SIZE, sheetPosition * TileRenderer.TILE_SIZE / TileRenderer.TILE_SHEET_SIZE, TileRenderer.TILE_SIZE, TileRenderer.TILE_SIZE);
+        sprite = loader.loadSprite(TileRenderer.TILE_SHEET, sheetPosition % TileRenderer.TILES_IN_A_ROW * TileRenderer.TILE_SIZE, sheetPosition / TileRenderer.TILES_IN_A_ROW * TileRenderer.TILE_SIZE, TileRenderer.TILE_SIZE, TileRenderer.TILE_SIZE);
     }
 
 }

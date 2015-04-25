@@ -89,6 +89,17 @@ public class MainTestGame {
             if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
                 GameManger.setRunning(false);
             }
+            if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_F11) {
+                GameManger.setFullscreen(!GameManger.isFullscreen());
+                Display.setFullscreen(GameManger.isFullscreen());
+                System.out.println("Switching to " + (GameManger.isFullscreen() ? "fullscreen" : "windowed") + " mode");
+            }
+
+            if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_F12) {
+                GameManger.setVsyncEnabled(!GameManger.isVSyncEnabled());
+                Display.setVSyncEnabled(GameManger.isVSyncEnabled());
+                System.out.println((GameManger.isVSyncEnabled() ? "Enabling" : "Disabling") + " VSync");
+            }
         }
 
         if (Display.isCloseRequested()) {
@@ -99,16 +110,6 @@ public class MainTestGame {
             if (Mouse.getEventButtonState() && Mouse.getEventButton() == 0) {
                 System.out.println(Mouse.getEventX() - GameManger.getOffsetX() + " - " + (Mouse.getEventY() - GameManger.getOffsetY()));
             }
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_F11)) {
-            GameManger.setFullscreen(!GameManger.isFullscreen());
-            Display.setFullscreen(GameManger.isFullscreen());
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_F12)) {
-            GameManger.setVsyncEnabled(!GameManger.isVSyncEnabled());
-            Display.setVSyncEnabled(GameManger.isVSyncEnabled());
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
@@ -151,6 +152,7 @@ public class MainTestGame {
     }
 
     private static void run() throws LWJGLException {
+        System.out.println("Initialising startup routine");
         createDisplay();
         setup();
         start();
@@ -171,6 +173,8 @@ public class MainTestGame {
     }
 
     private static void start() throws LWJGLException {
+
+        System.out.println("Successfully started " + GameLib.TITLE);
 
         long now = 0L;
         int frameCounter = 0;
@@ -211,10 +215,12 @@ public class MainTestGame {
     }
 
     private static void stop() {
+        System.out.println("Initialising shutdown routine");
         for (ISprite sprite : SpriteLoader.getInstance().getRegisteredSprites()) {
             RenderManager.delete(sprite);
         }
         Display.destroy();
+        System.out.println("Shutting down...");
     }
 
     private static void update() {

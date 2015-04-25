@@ -4,13 +4,17 @@ import main.game.render.ISprite;
 
 public class TileAir extends Tile {
 
+    public TileAir() {
+        setSolid(false);
+    }
+
     @Override
     public ISprite getSprite() {
         return null;
     }
 
     @Override
-    public int getTileID() {
+    public byte getTileID() {
         return 0;
     }
 

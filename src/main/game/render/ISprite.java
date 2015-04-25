@@ -2,13 +2,13 @@ package main.game.render;
 
 public interface ISprite {
 
-    float getMaxU();
+    double getMaxU();
 
-    float getMaxV();
+    double getMaxV();
 
-    float getMinU();
+    double getMinU();
 
-    float getMinV();
+    double getMinV();
 
     int getTextureHeight();
 

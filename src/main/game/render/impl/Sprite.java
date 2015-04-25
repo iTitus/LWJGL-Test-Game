@@ -4,7 +4,7 @@ import main.game.render.ISprite;
 
 public class Sprite implements ISprite {
 
-    private final float minU, maxU, minV, maxV;
+    private final double minU, maxU, minV, maxV;
     private final int textureID, width, height;
 
     public Sprite(int textureID, int width, int height) {
@@ -38,22 +38,22 @@ public class Sprite implements ISprite {
     }
 
     @Override
-    public float getMaxU() {
+    public double getMaxU() {
         return maxU;
     }
 
     @Override
-    public float getMaxV() {
+    public double getMaxV() {
         return maxV;
     }
 
     @Override
-    public float getMinU() {
+    public double getMinU() {
         return minU;
     }
 
     @Override
-    public float getMinV() {
+    public double getMinV() {
         return minV;
     }
 
