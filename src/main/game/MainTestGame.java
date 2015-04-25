@@ -26,8 +26,7 @@ import org.lwjgl.util.glu.GLU;
 public class MainTestGame {
 
     private static double delta;
-    private static int fps;
-    private static int ticks;
+    private static int fps, tps, ticks;
 
     private static void createDisplay() throws LWJGLException {
         ImageIO.setUseCache(false);
@@ -49,10 +48,6 @@ public class MainTestGame {
 
         FontRenderer.init(SpriteLoader.getInstance().loadSprite("font"), 32, 32);
 
-    }
-
-    private static void drawFPS() {
-        FontRenderer.drawString(1, GameLib.HEIGHT + 3, "FPS: " + fps);
     }
 
     public static double getDelta() {
@@ -83,6 +78,10 @@ public class MainTestGame {
 
     private static long getTime() {
         return Sys.getTime() * 1000 / Sys.getTimerResolution();
+    }
+
+    public static int getTPS() {
+        return tps;
     }
 
     private static void handleInput() throws LWJGLException {
@@ -143,7 +142,7 @@ public class MainTestGame {
 
         GameManger.getWorld().render();
 
-        drawFPS();
+        FontRenderer.drawString(1, GameLib.HEIGHT + 3, "FPS: " + fps + " | TPS: " + tps);
 
         int error = GL11.glGetError();
         if (error != GL11.GL_NO_ERROR) {
@@ -175,8 +174,10 @@ public class MainTestGame {
 
         long now = 0L;
         int frameCounter = 0;
+        int tickCounter = 0;
         long lastTime = getTime();
         long lastFPSMeasure = lastTime;
+        long lastTPSMeasure = lastTime;
 
         while (GameManger.isRunning()) {
             now = getTime();
@@ -187,16 +188,23 @@ public class MainTestGame {
                 update();
                 ticks++;
                 delta--;
+                tickCounter++;
             }
             render();
             Display.update();
+            frameCounter++;
 
             if (getTime() - lastFPSMeasure > 1000) {
                 fps = frameCounter;
                 frameCounter = 0;
                 lastFPSMeasure += 1000;
             }
-            frameCounter++;
+
+            if (getTime() - lastTPSMeasure > 1000) {
+                tps = tickCounter;
+                tickCounter = 0;
+                lastTPSMeasure += 1000;
+            }
 
         }
 

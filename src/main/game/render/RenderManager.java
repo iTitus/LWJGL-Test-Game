@@ -1,5 +1,7 @@
 package main.game.render;
 
+import main.game.render.impl.Shader;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -7,6 +9,10 @@ import org.lwjgl.opengl.GL20;
 public final class RenderManager {
 
     private static int currentTextureID;
+
+    public static void bindAttribLocation(Shader shader, int index, String name) {
+        GL20.glBindAttribLocation(shader.getProgramID(), index, name);
+    }
 
     public static void bindSprite(ISprite sprite) {
         if (sprite != null) {
@@ -23,6 +29,10 @@ public final class RenderManager {
         if (sprite != null) {
             GL11.glDeleteTextures(sprite.getTextureID());
         }
+    }
+
+    public static int getAttribLocation(Shader shader, String name) {
+        return GL20.glGetAttribLocation(shader.getProgramID(), name);
     }
 
     public static int getNewProgramID() {
