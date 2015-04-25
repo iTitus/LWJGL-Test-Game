@@ -43,30 +43,10 @@ public class World {
         return list;
     }
 
-    public List<Entity> getEntitiesAtExcludingEntity(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude) {
+    public List<Entity> getEntitiesExcludingEntityAt(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude) {
         List<Entity> list = new ArrayList<Entity>();
         for (Entity e : entities) {
             if (e != null && e != entityToExclude && e.isInside(posX, posY, sizeX, sizeY)) {
-                list.add(e);
-            }
-        }
-        return list;
-    }
-
-    public List<Entity> getEntitiesAtWithMatcher(double posX, double posY, double sizeX, double sizeY, IEntityMatcher matcher) {
-        List<Entity> list = new ArrayList<Entity>();
-        for (Entity e : entities) {
-            if (e != null && e.isInside(posX, posY, sizeX, sizeY) && matcher.matches(e)) {
-                list.add(e);
-            }
-        }
-        return list;
-    }
-
-    public List<Entity> getEntitiesAtWithMatcherExcludingEntity(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude, IEntityMatcher matcher) {
-        List<Entity> list = new ArrayList<Entity>();
-        for (Entity e : entities) {
-            if (e != null && e != entityToExclude && e.isInside(posX, posY, sizeX, sizeY) && matcher.matches(e)) {
                 list.add(e);
             }
         }
@@ -83,7 +63,7 @@ public class World {
         return list;
     }
 
-    public <T extends Entity> List<T> getEntitiesOfClassAtExcludingEntity(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude, Class<T> entityClass) {
+    public <T extends Entity> List<T> getEntitiesOfClassExcludingEntityAt(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude, Class<T> entityClass) {
         List<T> list = new ArrayList<T>();
         for (Entity e : entities) {
             if (e != null && e != entityToExclude && entityClass.isInstance(e) && e.isInside(posX, posY, sizeX, sizeY)) {
@@ -93,7 +73,7 @@ public class World {
         return list;
     }
 
-    public <T extends Entity> List<T> getEntitiesOfClassAtWithMatcher(double posX, double posY, double sizeX, double sizeY, IEntityMatcher matcher, Class<T> entityClass) {
+    public <T extends Entity> List<T> getEntitiesOfClassWithMatcherAt(double posX, double posY, double sizeX, double sizeY, IEntityMatcher matcher, Class<T> entityClass) {
         List<T> list = new ArrayList<T>();
         for (Entity e : entities) {
             if (e != null && entityClass.isInstance(e) && e.isInside(posX, posY, sizeX, sizeY) && matcher.matches(e)) {
@@ -103,11 +83,31 @@ public class World {
         return list;
     }
 
-    public <T extends Entity> List<T> getEntitiesOfClassAtWithMatcherExcludingEntity(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude, IEntityMatcher matcher, Class<T> entityClass) {
+    public <T extends Entity> List<T> getEntitiesOfClassWithMatcherExcludingEntityAt(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude, IEntityMatcher matcher, Class<T> entityClass) {
         List<T> list = new ArrayList<T>();
         for (Entity e : entities) {
             if (e != null && e != entityToExclude && entityClass.isInstance(e) && e.isInside(posX, posY, sizeX, sizeY) && matcher.matches(e)) {
                 list.add(entityClass.cast(e));
+            }
+        }
+        return list;
+    }
+
+    public List<Entity> getEntitiesWithMatcherAt(double posX, double posY, double sizeX, double sizeY, IEntityMatcher matcher) {
+        List<Entity> list = new ArrayList<Entity>();
+        for (Entity e : entities) {
+            if (e != null && e.isInside(posX, posY, sizeX, sizeY) && matcher.matches(e)) {
+                list.add(e);
+            }
+        }
+        return list;
+    }
+
+    public List<Entity> getEntitiesWithMatcherExcludingEntityAt(double posX, double posY, double sizeX, double sizeY, Entity entityToExclude, IEntityMatcher matcher) {
+        List<Entity> list = new ArrayList<Entity>();
+        for (Entity e : entities) {
+            if (e != null && e != entityToExclude && e.isInside(posX, posY, sizeX, sizeY) && matcher.matches(e)) {
+                list.add(e);
             }
         }
         return list;

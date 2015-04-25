@@ -93,6 +93,10 @@ public abstract class Entity {
         // TODO
     }
 
+    public void onCollide(Entity e) {
+        // TODO
+    }
+
     public void render() {
         EntityRenderer.renderStandardEntity(this);
     }

@@ -36,19 +36,19 @@ public final class EntityRenderer {
     }
 
     public static void renderStandardEntity(Entity e) {
-
-        ISprite sprite = e.getSprite();
-
-        if (sprite != null) {
-            double renderPosX = e.getPrevPosX() + e.getMotionX() * MainTestGame.getDelta();
-            double renderPosY = e.getPrevPosY() + e.getMotionY() * MainTestGame.getDelta();
-            GL11.glPushMatrix();
-            {
-                GL11.glTranslated(renderPosX * TileRenderer.TILE_SIZE + GameManger.getOffsetX(), renderPosY * TileRenderer.TILE_SIZE + GameManger.getOffsetY(), 0);
-                RenderManager.bindSprite(sprite);
-                immediateDrawing(sprite, e.getSizeX() * TileRenderer.TILE_SIZE, e.getSizeY() * TileRenderer.TILE_SIZE);
+        if (!e.isDead()) {
+            ISprite sprite = e.getSprite();
+            if (sprite != null) {
+                double renderPosX = e.getPrevPosX() + e.getMotionX() * MainTestGame.getDelta();
+                double renderPosY = e.getPrevPosY() + e.getMotionY() * MainTestGame.getDelta();
+                GL11.glPushMatrix();
+                {
+                    GL11.glTranslated(renderPosX * TileRenderer.TILE_SIZE + GameManger.getOffsetX(), renderPosY * TileRenderer.TILE_SIZE + GameManger.getOffsetY(), 0);
+                    RenderManager.bindSprite(sprite);
+                    immediateDrawing(sprite, e.getSizeX() * TileRenderer.TILE_SIZE, e.getSizeY() * TileRenderer.TILE_SIZE);
+                }
+                GL11.glPopMatrix();
             }
-            GL11.glPopMatrix();
         }
     }
 }

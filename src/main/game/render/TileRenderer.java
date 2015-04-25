@@ -41,9 +41,7 @@ public final class TileRenderer {
     }
 
     public static void renderStandardTile(World world, int x, int y, Tile tile) {
-
         ISprite sprite = tile.getSprite(world, x, y);
-
         if (sprite != null) {
             GL11.glPushMatrix();
             {
