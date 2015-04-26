@@ -12,6 +12,7 @@ import main.game.render.impl.SpriteLoader;
 import main.game.tile.Tile;
 import main.game.util.BufferUtil;
 import main.game.util.FileUtil;
+import main.game.util.Logger;
 import main.game.world.World;
 
 import org.lwjgl.LWJGLException;
@@ -92,13 +93,13 @@ public class MainTestGame {
             if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_F11) {
                 GameManger.setFullscreen(!GameManger.isFullscreen());
                 Display.setFullscreen(GameManger.isFullscreen());
-                System.out.println("Switching to " + (GameManger.isFullscreen() ? "fullscreen" : "windowed") + " mode");
+                Logger.info("Switching to " + (GameManger.isFullscreen() ? "fullscreen" : "windowed") + " mode");
             }
 
             if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_F12) {
                 GameManger.setVsyncEnabled(!GameManger.isVSyncEnabled());
                 Display.setVSyncEnabled(GameManger.isVSyncEnabled());
-                System.out.println((GameManger.isVSyncEnabled() ? "Enabling" : "Disabling") + " VSync");
+                Logger.info((GameManger.isVSyncEnabled() ? "Enabling" : "Disabling") + " VSync");
             }
         }
 
@@ -108,7 +109,7 @@ public class MainTestGame {
 
         while (Mouse.next()) {
             if (Mouse.getEventButtonState() && Mouse.getEventButton() == 0) {
-                System.out.println(Mouse.getEventX() - GameManger.getOffsetX() + " - " + (Mouse.getEventY() - GameManger.getOffsetY()));
+                Logger.info(Mouse.getEventX() - GameManger.getOffsetX() + " - " + (Mouse.getEventY() - GameManger.getOffsetY()));
             }
         }
 
@@ -152,7 +153,7 @@ public class MainTestGame {
     }
 
     private static void run() throws LWJGLException {
-        System.out.println("Initialising startup routine");
+        Logger.info("Initialising startup routine");
         createDisplay();
         setup();
         start();
@@ -160,6 +161,7 @@ public class MainTestGame {
     }
 
     private static void setup() {
+
         GameManger.setRunning(true);
         GameManger.setFullscreen(false);
         GameManger.setVsyncEnabled(true);
@@ -172,9 +174,9 @@ public class MainTestGame {
 
     }
 
-    private static void start() throws LWJGLException {
+    private static void start() {
 
-        System.out.println("Successfully started " + GameLib.TITLE);
+        Logger.info("Successfully started " + GameLib.TITLE);
 
         long now = 0L;
         int frameCounter = 0;
@@ -183,44 +185,54 @@ public class MainTestGame {
         long lastFPSMeasure = lastTime;
         long lastTPSMeasure = lastTime;
 
-        while (GameManger.isRunning()) {
-            now = getTime();
-            delta += (now - lastTime) / (1000 / GameLib.TPS);
-            lastTime = now;
-            while (delta >= 1) {
-                handleInput();
-                update();
-                ticks++;
-                delta--;
-                tickCounter++;
-            }
-            render();
-            Display.update();
-            frameCounter++;
+        Throwable throwable = null;
+        try {
+            while (GameManger.isRunning()) {
+                now = getTime();
+                delta += (now - lastTime) / (1000 / GameLib.TPS);
+                lastTime = now;
+                while (delta >= 1) {
+                    handleInput();
+                    update();
+                    ticks++;
+                    delta--;
+                    tickCounter++;
+                }
+                render();
+                Display.update();
+                frameCounter++;
 
-            if (getTime() - lastFPSMeasure > 1000) {
-                fps = frameCounter;
-                frameCounter = 0;
-                lastFPSMeasure += 1000;
-            }
+                if (getTime() - lastFPSMeasure > 1000) {
+                    fps = frameCounter;
+                    frameCounter = 0;
+                    lastFPSMeasure += 1000;
+                }
 
-            if (getTime() - lastTPSMeasure > 1000) {
-                tps = tickCounter;
-                tickCounter = 0;
-                lastTPSMeasure += 1000;
-            }
+                if (getTime() - lastTPSMeasure > 1000) {
+                    tps = tickCounter;
+                    tickCounter = 0;
+                    lastTPSMeasure += 1000;
+                }
 
+            }
+        } catch (Throwable t) {
+            throwable = t;
+        }
+
+        if (throwable != null) {
+            Logger.logThrowable("Encountered an unexpected error", throwable);
         }
 
     }
 
     private static void stop() {
-        System.out.println("Initialising shutdown routine");
+        Logger.info("Initialising shutdown routine");
         for (ISprite sprite : SpriteLoader.getInstance().getRegisteredSprites()) {
             RenderManager.delete(sprite);
         }
         Display.destroy();
-        System.out.println("Shutting down...");
+        Logger.info("Shutting down...");
+        Logger.saveLog();
     }
 
     private static void update() {

@@ -16,7 +16,7 @@ public class FileUtil {
     public static BufferedImage loadImage(String name) {
         try {
             BufferedImage image = ImageIO.read(MainTestGame.class.getResource("resources" + File.separator + "images" + File.separator + name + ".png"));
-            System.out.println("Successfully loaded image: '" + name + ".png'");
+            Logger.info("Successfully loaded image: '" + name + ".png'");
             return image;
         } catch (Exception e) {
             throw new RuntimeException("Unable to load image '" + name + "'", e);
@@ -38,7 +38,7 @@ public class FileUtil {
             while ((line = reader.readLine()) != null) {
                 file += line + '\n';
             }
-            System.out.println("Successfully loaded shader '" + name + "'");
+            Logger.info("Successfully loaded shader '" + name + "'");
         } catch (Exception e) {
             throw new RuntimeException("Unable to load shader from file '" + name + "'", e);
         }

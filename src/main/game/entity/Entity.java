@@ -131,6 +131,11 @@ public abstract class Entity {
         this.posY = posY;
     }
 
+    public void setSize(double sizeX, double sizeY) {
+        setSizeX(sizeX);
+        setSizeY(sizeY);
+    }
+
     public void setSizeX(double sizeX) {
         this.sizeX = sizeX;
     }

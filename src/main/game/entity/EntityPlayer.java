@@ -7,6 +7,7 @@ public class EntityPlayer extends EntityLiving {
 
     public EntityPlayer(World world) {
         super(world);
+        setSize(0.8, 1.6);
     }
 
     @Override
