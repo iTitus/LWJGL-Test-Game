@@ -36,7 +36,7 @@ public final class EntityRenderer {
     }
 
     public static void renderStandardEntity(Entity e) {
-        if (!e.isDead()) {
+        if (e != null && !e.isDead()) {
             ISprite sprite = e.getSprite();
             if (sprite != null) {
                 double renderPosX = e.getPrevPosX() + e.getMotionX() * MainTestGame.getDelta();

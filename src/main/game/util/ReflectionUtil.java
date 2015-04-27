@@ -111,6 +111,14 @@ public final class ReflectionUtil {
         return methods;
     }
 
+    public static Method getMethodSilently(Class<?> cls, String methodName, Class<?>... args) {
+        try {
+            return cls.getDeclaredMethod(methodName, args);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
     public static List<Method> getMethodsInClassesWithAnnotation(ArrayList<Class<?>> classes, Class<? extends Annotation> annotationClass, int... modifiers) {
         List<Method> methods = new ArrayList<Method>();
         for (Class<?> cls : classes) {

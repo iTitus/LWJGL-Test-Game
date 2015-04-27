@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import main.game.entity.EntityPlayer;
+import main.game.reference.Entities;
 import main.game.reference.GameLib;
 import main.game.render.FontRenderer;
 import main.game.render.ISprite;
@@ -113,22 +115,6 @@ public class MainTestGame {
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            GameManger.setOffsetY(GameManger.getOffsetY() - 1);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            GameManger.setOffsetX(GameManger.getOffsetX() + 1);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            GameManger.setOffsetY(GameManger.getOffsetY() + 1);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            GameManger.setOffsetX(GameManger.getOffsetX() - 1);
-        }
-
     }
 
     public static void main(String[] args) {
@@ -167,10 +153,15 @@ public class MainTestGame {
         GameManger.setVsyncEnabled(true);
 
         Tile.init();
+        Entities.init();
 
         GameManger.setWorld(new World(64, 64));
 
         GameManger.getWorld().genTestWorld();
+
+        GameManger.setPlayer(new EntityPlayer(GameManger.getWorld()));
+        GameManger.getPlayer().setPosition(2, 2);
+        GameManger.getWorld().spawnEntity(GameManger.getPlayer());
 
     }
 

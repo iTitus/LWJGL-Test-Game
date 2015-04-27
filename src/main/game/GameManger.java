@@ -1,10 +1,12 @@
 package main.game;
 
+import main.game.entity.EntityPlayer;
 import main.game.world.World;
 
 public class GameManger {
 
     private static int offsetX, offsetY;
+    private static EntityPlayer player;
     private static boolean running, isFullscreen, vsync;
     private static World world;
 
@@ -14,6 +16,10 @@ public class GameManger {
 
     public static int getOffsetY() {
         return offsetY;
+    }
+
+    public static EntityPlayer getPlayer() {
+        return player;
     }
 
     public static World getWorld() {
@@ -42,6 +48,10 @@ public class GameManger {
 
     public static void setOffsetY(int offsetY) {
         GameManger.offsetY = offsetY;
+    }
+
+    public static void setPlayer(EntityPlayer player) {
+        GameManger.player = player;
     }
 
     public static void setRunning(boolean running) {

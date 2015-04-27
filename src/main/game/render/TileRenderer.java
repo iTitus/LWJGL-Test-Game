@@ -41,15 +41,17 @@ public final class TileRenderer {
     }
 
     public static void renderStandardTile(World world, int x, int y, Tile tile) {
-        ISprite sprite = tile.getSprite(world, x, y);
-        if (sprite != null) {
-            GL11.glPushMatrix();
-            {
-                GL11.glTranslatef(x * TILE_SIZE + GameManger.getOffsetX(), y * TILE_SIZE + GameManger.getOffsetY(), 0);
-                RenderManager.bindSprite(sprite);
-                immediateDrawing(sprite);
+        if (tile != null) {
+            ISprite sprite = tile.getSprite(world, x, y);
+            if (sprite != null) {
+                GL11.glPushMatrix();
+                {
+                    GL11.glTranslatef(x * TILE_SIZE + GameManger.getOffsetX(), y * TILE_SIZE + GameManger.getOffsetY(), 0);
+                    RenderManager.bindSprite(sprite);
+                    immediateDrawing(sprite);
+                }
+                GL11.glPopMatrix();
             }
-            GL11.glPopMatrix();
         }
     }
 }

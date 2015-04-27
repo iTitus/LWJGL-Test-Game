@@ -13,6 +13,7 @@ public class World {
 
     public static final int MAX_TILE_META = 1 << 24;
     private final List<Entity> entities, spawnList;
+    @SuppressWarnings("unused")
     private final Random rand = new Random();
     private final int sizeX, sizeY;
     private final int[][] tiles;
@@ -27,9 +28,12 @@ public class World {
 
     public void genTestWorld() {
         for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                setTileAt(x, y, Math.random() >= 0.5 ? Tile.grass : Tile.stone);
-            }
+            setTileAt(x, sizeY - 1, Tile.stone);
+            setTileAt(x, 0, Tile.grass);
+        }
+        for (int y = 0; y < sizeY; y++) {
+            setTileAt(sizeX - 1, y, Tile.stone);
+            setTileAt(0, y, Tile.stone);
         }
     }
 
@@ -135,6 +139,11 @@ public class World {
                 getTileAt(x, y).render(this, x, y);
             }
         }
+        for (Entity e : entities) {
+            if (e != null && !e.isDead()) {
+                e.render();
+            }
+        }
     }
 
     public void setTileAt(int x, int y, Tile tile) {
@@ -162,9 +171,11 @@ public class World {
     }
 
     public void update() {
-        setTileAt(rand.nextInt(sizeX), rand.nextInt(sizeY), Math.random() >= 0.5 ? Tile.grass : Tile.stone);
-        entities.addAll(spawnList);
-        spawnList.clear();
+        // setTileAt(rand.nextInt(sizeX), rand.nextInt(sizeY), Math.random() >= 0.5 ? Tile.grass : Tile.stone);
+        if (!spawnList.isEmpty()) {
+            entities.addAll(spawnList);
+            spawnList.clear();
+        }
         for (Iterator<Entity> iterator = entities.iterator(); iterator.hasNext();) {
             Entity e = iterator.next();
             if (e != null) {

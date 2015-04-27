@@ -1,5 +1,6 @@
 package main.game.tile;
 
+import main.game.entity.Entity;
 import main.game.render.ISprite;
 import main.game.render.ISpriteLoader;
 import main.game.render.TileRenderer;
@@ -54,6 +55,10 @@ public abstract class Tile {
     }
 
     public void loadSprites(ISpriteLoader loader) {
+        // NO-OP
+    }
+
+    public void onWalkOn(World world, int x, int y, Entity entity) {
         // NO-OP
     }
 

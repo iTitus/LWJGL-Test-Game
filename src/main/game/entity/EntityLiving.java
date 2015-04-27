@@ -4,7 +4,7 @@ import main.game.world.World;
 
 public abstract class EntityLiving extends Entity {
 
-    private int health, maxHealth;
+    protected int health, maxHealth;
 
     public EntityLiving(World world) {
         super(world);

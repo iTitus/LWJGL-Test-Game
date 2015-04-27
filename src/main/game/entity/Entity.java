@@ -2,14 +2,15 @@ package main.game.entity;
 
 import main.game.render.EntityRenderer;
 import main.game.render.ISprite;
+import main.game.tile.Tile;
 import main.game.util.MathUtil;
 import main.game.world.World;
 
 public abstract class Entity {
 
     private boolean isDead = false;
-    private double prevPosX, prevPosY, posX, posY, sizeX, sizeY, motionX, motionY;
-    private World world;
+    protected double prevPosX, prevPosY, posX, posY, sizeX, sizeY, motionX, motionY;
+    protected World world;
 
     public Entity(World world) {
         this.world = world;
@@ -90,7 +91,46 @@ public abstract class Entity {
     }
 
     public void move(double dx, double dy) {
-        // TODO
+        int rX1 = MathUtil.floor(posX + dx);
+        int rY1 = MathUtil.floor(posY + dy);
+        Tile r1 = world.getTileAt(rX1, rY1);
+        int rX2 = MathUtil.floor(posX + sizeX + dx);
+        int rY2 = MathUtil.floor(posY + dy);
+        Tile r2 = world.getTileAt(rX2, rY2);
+        int rX3 = MathUtil.floor(posX + dx);
+        int rY3 = MathUtil.floor(posY + sizeY + dy);
+        Tile r3 = world.getTileAt(rX3, rY3);
+        int rX4 = MathUtil.floor(posX + sizeX + dx);
+        int rY4 = MathUtil.floor(posY + sizeY + dy);
+        Tile r4 = world.getTileAt(rX4, rY4);
+
+        double dposX = 0;
+        double dposY = 0;
+        if ((r1 == null || !(r1.isSolid() && MathUtil.isInside(rX1, rY1, 1, 1, posX + dx, posY + dy, sizeX, sizeY))) && (r2 == null || !(r2.isSolid() && MathUtil.isInside(rX2, rY2, 1, 1, posX + dx, posY + dy, sizeX, sizeY)))
+                && (r3 == null || !(r3.isSolid() && MathUtil.isInside(rX3, rY3, 1, 1, posX + dx, posY + dy, sizeX, sizeY))) && (r4 == null || !(r4.isSolid() && MathUtil.isInside(rX4, rY4, 1, 1, posX + dx, posY + dy, sizeX, sizeY)))) {
+            dposX = dx;
+            dposY = dy;
+        } else {
+            dposX = dx != 0 ? dx < 0 ? rX1 + 1 - posX : rX2 - (posX + sizeX) : 0;
+            dposY = dy != 0 ? dy < 0 ? rY1 + 1 - posY : rY3 - (posY + sizeY) : 0;
+        }
+        posX += dposX;
+        posY += dposY;
+        if (r1 != null) {
+            r1.onWalkOn(world, rX1, rY1, this);
+        }
+        if (r2 != null && (rX2 != rX1 || rY2 != rY1)) {
+            r2.onWalkOn(world, rX2, rY2, this);
+        }
+        if (r3 != null && (rX3 != rX1 || rY3 != rY1) && (rX3 != rX2 || rY3 != rY2)) {
+            r3.onWalkOn(world, rX3, rY3, this);
+        }
+        if (r4 != null && (rX4 != rX1 || rY4 != rY1) && (rX4 != rX2 || rY4 != rY2) && (rX4 != rX3 || rY4 != rY3)) {
+            r4.onWalkOn(world, rX4, rY4, this);
+        }
+        for (Entity e : world.getEntitiesExcludingEntityAt(posX, posY, sizeX, sizeY, this)) {
+            e.onCollide(this);
+        }
     }
 
     public void onCollide(Entity e) {
@@ -153,4 +193,5 @@ public abstract class Entity {
         prevPosY = posY;
         move(motionX, motionY);
     }
+
 }

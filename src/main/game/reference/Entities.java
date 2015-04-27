@@ -1,9 +1,13 @@
 package main.game.reference;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import main.game.entity.Entity;
+import main.game.entity.EntityPlayer;
+import main.game.render.ISpriteLoader;
+import main.game.render.impl.SpriteLoader;
 import main.game.util.ReflectionUtil;
 import main.game.util.StringUtil;
 import main.game.world.World;
@@ -26,7 +30,7 @@ public class Entities {
     }
 
     public static void init() {
-
+        registerEntity(EntityPlayer.class, "player");
     }
 
     public static void registerEntity(Class<? extends Entity> entityClass, String name) {
@@ -38,6 +42,11 @@ public class Entities {
         }
         entityMappings.put(entityClass, name);
         entityBackMappings.put(name, entityClass);
+
+        Method m = ReflectionUtil.getMethodSilently(entityClass, "loadSprites", ISpriteLoader.class);
+        if (m != null) {
+            ReflectionUtil.invokeStatic(m, SpriteLoader.getInstance());
+        }
     }
 
     private Entities() {
