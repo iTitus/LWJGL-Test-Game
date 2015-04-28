@@ -8,6 +8,8 @@ import java.util.Random;
 import main.game.entity.Entity;
 import main.game.tile.Tile;
 import main.game.util.IEntityMatcher;
+import main.game.util.MathUtil;
+import main.game.util.TileData;
 
 public class World {
 
@@ -117,6 +119,10 @@ public class World {
         return list;
     }
 
+    public double getGravity(Entity entity) {
+        return -0.125;
+    }
+
     public int getSizeX() {
         return sizeX;
     }
@@ -131,6 +137,18 @@ public class World {
 
     public int getTileMetaAt(int x, int y) {
         return tiles[x][y] >>> 8;
+    }
+
+    public List<TileData> getTilesAt(double posX, double posY, double sizeX, double sizeY) {
+        List<TileData> list = new ArrayList<TileData>();
+        int startX = MathUtil.floor(posX), startY = MathUtil.floor(posY);
+        int endX = MathUtil.floor(posX + sizeX), endY = MathUtil.floor(posY + sizeY);
+        for (int x = startX; x <= endX; x++) {
+            for (int y = startY; y <= endY; y++) {
+                list.add(new TileData(getTileAt(x, y), x, y));
+            }
+        }
+        return list;
     }
 
     public void render() {

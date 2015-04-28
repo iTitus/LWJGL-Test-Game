@@ -2,18 +2,39 @@ package main.game.entity;
 
 import main.game.render.EntityRenderer;
 import main.game.render.ISprite;
-import main.game.tile.Tile;
 import main.game.util.MathUtil;
+import main.game.util.TileData;
+import main.game.util.Vector2d;
 import main.game.world.World;
 
 public abstract class Entity {
 
-    private boolean isDead = false;
-    protected double prevPosX, prevPosY, posX, posY, sizeX, sizeY, motionX, motionY;
+    private boolean isDead, isSolid;
+    protected double posX, posY, sizeX, sizeY;
     protected World world;
 
     public Entity(World world) {
         this.world = world;
+        isDead = false;
+    }
+
+    public boolean collides() {
+        for (TileData t : world.getTilesAt(posX, posY, sizeX, sizeY)) {
+            if (t == null || t.getTile() == null) {
+                return true;
+            }
+            t.getTile().onWalkOn(world, t.getX(), t.getY(), this);
+            if (t.getTile().isSolid()) {
+                return true;
+            }
+        }
+        for (Entity e : world.getEntitiesExcludingEntityAt(posX, posY, sizeX, sizeY, this)) {
+            e.onCollide(this);
+            if (isSolid && e.isSolid) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public double getDistance(double x, double y) {
@@ -22,14 +43,6 @@ public abstract class Entity {
 
     public double getDistance(Entity e) {
         return getDistance(e.getPosXCentered(), e.getPosYCentered());
-    }
-
-    public double getMotionX() {
-        return motionX;
-    }
-
-    public double getMotionY() {
-        return motionY;
     }
 
     public double getPosX() {
@@ -54,14 +67,6 @@ public abstract class Entity {
 
     public int getPosYTiled() {
         return MathUtil.floor(getPosYCentered());
-    }
-
-    public double getPrevPosX() {
-        return prevPosX;
-    }
-
-    public double getPrevPosY() {
-        return prevPosY;
     }
 
     public double getSizeX() {
@@ -90,51 +95,12 @@ public abstract class Entity {
         return isInside(e.posX, e.posY, e.sizeX, e.sizeY);
     }
 
-    public void move(double dx, double dy) {
-        int rX1 = MathUtil.floor(posX + dx);
-        int rY1 = MathUtil.floor(posY + dy);
-        Tile r1 = world.getTileAt(rX1, rY1);
-        int rX2 = MathUtil.floor(posX + sizeX + dx);
-        int rY2 = MathUtil.floor(posY + dy);
-        Tile r2 = world.getTileAt(rX2, rY2);
-        int rX3 = MathUtil.floor(posX + dx);
-        int rY3 = MathUtil.floor(posY + sizeY + dy);
-        Tile r3 = world.getTileAt(rX3, rY3);
-        int rX4 = MathUtil.floor(posX + sizeX + dx);
-        int rY4 = MathUtil.floor(posY + sizeY + dy);
-        Tile r4 = world.getTileAt(rX4, rY4);
-
-        double dposX = 0;
-        double dposY = 0;
-        if ((r1 == null || !(r1.isSolid() && MathUtil.isInside(rX1, rY1, 1, 1, posX + dx, posY + dy, sizeX, sizeY))) && (r2 == null || !(r2.isSolid() && MathUtil.isInside(rX2, rY2, 1, 1, posX + dx, posY + dy, sizeX, sizeY)))
-                && (r3 == null || !(r3.isSolid() && MathUtil.isInside(rX3, rY3, 1, 1, posX + dx, posY + dy, sizeX, sizeY))) && (r4 == null || !(r4.isSolid() && MathUtil.isInside(rX4, rY4, 1, 1, posX + dx, posY + dy, sizeX, sizeY)))) {
-            dposX = dx;
-            dposY = dy;
-        } else {
-            dposX = dx != 0 ? dx < 0 ? rX1 + 1 - posX : rX2 - (posX + sizeX) : 0;
-            dposY = dy != 0 ? dy < 0 ? rY1 + 1 - posY : rY3 - (posY + sizeY) : 0;
-        }
-        posX += dposX;
-        posY += dposY;
-        if (r1 != null) {
-            r1.onWalkOn(world, rX1, rY1, this);
-        }
-        if (r2 != null && (rX2 != rX1 || rY2 != rY1)) {
-            r2.onWalkOn(world, rX2, rY2, this);
-        }
-        if (r3 != null && (rX3 != rX1 || rY3 != rY1) && (rX3 != rX2 || rY3 != rY2)) {
-            r3.onWalkOn(world, rX3, rY3, this);
-        }
-        if (r4 != null && (rX4 != rX1 || rY4 != rY1) && (rX4 != rX2 || rY4 != rY2) && (rX4 != rX3 || rY4 != rY3)) {
-            r4.onWalkOn(world, rX4, rY4, this);
-        }
-        for (Entity e : world.getEntitiesExcludingEntityAt(posX, posY, sizeX, sizeY, this)) {
-            e.onCollide(this);
-        }
+    public boolean isSolid() {
+        return isSolid;
     }
 
     public void onCollide(Entity e) {
-        // TODO
+        // NO-OP
     }
 
     public void render() {
@@ -143,19 +109,6 @@ public abstract class Entity {
 
     public void setDead() {
         isDead = true;
-    }
-
-    public void setMotion(double motionX, double motionY) {
-        setMotionX(motionX);
-        setMotionY(motionY);
-    }
-
-    public void setMotionX(double motionX) {
-        this.motionX = motionX;
-    }
-
-    public void setMotionY(double motionY) {
-        this.motionY = motionY;
     }
 
     public void setPosition(double posX, double posY) {
@@ -184,14 +137,29 @@ public abstract class Entity {
         this.sizeY = sizeY;
     }
 
+    public void setSolid(boolean isSolid) {
+        this.isSolid = isSolid;
+    }
+
     public void setWorld(World world) {
         this.world = world;
     }
 
+    public Vector2d tryMove(double dx, double dy) {
+        Vector2d original = new Vector2d(dx, dy);
+        Vector2d v = original;
+        setPosition(posX + v.getX(), posY + v.getY());
+        if (collides()) {
+            do {
+                v = v.div(2);
+                setPosition(posX - v.getX(), posY - v.getY());
+            } while (collides());
+        }
+        return v;
+    }
+
     public void update() {
-        prevPosX = posX;
-        prevPosY = posY;
-        move(motionX, motionY);
+        tryMove(0, world.getGravity(this));
     }
 
 }

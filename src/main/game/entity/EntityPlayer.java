@@ -1,17 +1,16 @@
 package main.game.entity;
 
 import main.game.GameManger;
-import main.game.MainTestGame;
 import main.game.render.ISprite;
 import main.game.render.ISpriteLoader;
 import main.game.render.TileRenderer;
+import main.game.util.MathUtil;
+import main.game.util.Vector2d;
 import main.game.world.World;
 
 import org.lwjgl.input.Keyboard;
 
 public class EntityPlayer extends EntityLiving {
-
-    public static final double PLAYER_SPEED = 1D / TileRenderer.TILE_SIZE;
 
     private static ISprite player_standing_still, player_walking_left[], player_walking_right[];
 
@@ -27,6 +26,8 @@ public class EntityPlayer extends EntityLiving {
         }
     }
 
+    private final double playerSpeed = 1D / TileRenderer.TILE_SIZE;
+
     public EntityPlayer(World world) {
         super(world);
         setSize(0.8, 1.6);
@@ -35,35 +36,33 @@ public class EntityPlayer extends EntityLiving {
 
     @Override
     public ISprite getSprite() {
-        if (motionX < 0) {
-            return player_walking_left[MainTestGame.getTicks() % player_walking_left.length];
-        } else if (motionX > 0) {
-            return player_walking_right[MainTestGame.getTicks() % player_walking_right.length];
-        }
+        // if (motionX < 0) {
+        // return player_walking_left[MainTestGame.getTicks() % player_walking_left.length];
+        // } else if (motionX > 0) {
+        // return player_walking_right[MainTestGame.getTicks() % player_walking_right.length];
+        // }
         return player_standing_still;
     }
 
     @Override
     public void update() {
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            GameManger.setOffsetY(GameManger.getOffsetY() - 1);
-            motionY = PLAYER_SPEED;
+        // if (Keyboard.isKeyDown(Keyboard.KEY_W) && !Keyboard.isKeyDown(Keyboard.KEY_S)) {
+        // Vector2d v = tryMove(0, PLAYER_SPEED);
+        // GameManger.setOffsetY(MathUtil.floor(GameManger.getOffsetY() - (v.getY() * TileRenderer.TILE_SIZE)));
+        // } else if (Keyboard.isKeyDown(Keyboard.KEY_S) && !Keyboard.isKeyDown(Keyboard.KEY_W)) {
+        // Vector2d v = tryMove(0, -PLAYER_SPEED);
+        // GameManger.setOffsetY(MathUtil.floor(GameManger.getOffsetY() - (v.getY() * TileRenderer.TILE_SIZE)));
+        // }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_A) && !Keyboard.isKeyDown(Keyboard.KEY_D)) {
+            Vector2d v = tryMove(-playerSpeed, 0);
+            GameManger.setOffsetX(MathUtil.floor(GameManger.getOffsetX() - v.getX() * TileRenderer.TILE_SIZE));
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            GameManger.setOffsetX(GameManger.getOffsetX() + 1);
-            motionX = -PLAYER_SPEED;
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            GameManger.setOffsetY(GameManger.getOffsetY() + 1);
-            motionY = -PLAYER_SPEED;
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            GameManger.setOffsetX(GameManger.getOffsetX() - 1);
-            motionX = PLAYER_SPEED;
+        if (Keyboard.isKeyDown(Keyboard.KEY_D) && !Keyboard.isKeyDown(Keyboard.KEY_A)) {
+            Vector2d v = tryMove(playerSpeed, 0);
+            GameManger.setOffsetX(MathUtil.floor(GameManger.getOffsetX() - v.getX() * TileRenderer.TILE_SIZE));
         }
         super.update();
     }

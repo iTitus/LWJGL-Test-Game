@@ -1,7 +1,6 @@
 package main.game.render;
 
 import main.game.GameManger;
-import main.game.MainTestGame;
 import main.game.entity.Entity;
 
 import org.lwjgl.opengl.GL11;
@@ -39,8 +38,8 @@ public final class EntityRenderer {
         if (e != null && !e.isDead()) {
             ISprite sprite = e.getSprite();
             if (sprite != null) {
-                double renderPosX = e.getPrevPosX() + e.getMotionX() * MainTestGame.getDelta();
-                double renderPosY = e.getPrevPosY() + e.getMotionY() * MainTestGame.getDelta();
+                double renderPosX = e.getPosX();
+                double renderPosY = e.getPosY();
                 GL11.glPushMatrix();
                 {
                     GL11.glTranslated(renderPosX * TileRenderer.TILE_SIZE + GameManger.getOffsetX(), renderPosY * TileRenderer.TILE_SIZE + GameManger.getOffsetY(), 0);
