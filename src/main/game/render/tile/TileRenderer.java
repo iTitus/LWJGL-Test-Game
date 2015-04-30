@@ -1,6 +1,8 @@
-package main.game.render;
+package main.game.render.tile;
 
 import main.game.GameManger;
+import main.game.render.ISprite;
+import main.game.render.RenderManager;
 import main.game.tile.Tile;
 import main.game.world.World;
 

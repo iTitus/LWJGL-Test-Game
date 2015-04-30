@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import main.game.entity.Entity;
+import main.game.reference.Entities;
 import main.game.tile.Tile;
 import main.game.util.IEntityMatcher;
 import main.game.util.MathUtil;
@@ -183,7 +184,7 @@ public class World {
     }
 
     public void spawnEntity(Entity e) {
-        if (e != null && !spawnList.contains(e) && !entities.contains(e)) {
+        if (e != null && !spawnList.contains(e) && !entities.contains(e) && Entities.isEntityRegistered(e.getClass())) {
             spawnList.add(e);
         }
     }

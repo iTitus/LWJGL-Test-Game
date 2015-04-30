@@ -2,7 +2,7 @@ package main.game.tile;
 
 import main.game.render.ISprite;
 import main.game.render.ISpriteLoader;
-import main.game.render.TileRenderer;
+import main.game.render.tile.TileRenderer;
 
 public class TileSimple extends Tile {
 

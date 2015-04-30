@@ -1,13 +1,15 @@
 package main.game.reference;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import main.game.entity.Entity;
+import main.game.entity.EntityMovingStone;
 import main.game.entity.EntityPlayer;
-import main.game.render.ISpriteLoader;
-import main.game.render.impl.SpriteLoader;
+import main.game.render.EntityRenderer;
+import main.game.render.IRenderEntity;
+import main.game.render.entity.RenderMovingStone;
+import main.game.render.entity.RenderPlayer;
 import main.game.util.ReflectionUtil;
 import main.game.util.StringUtil;
 import main.game.world.World;
@@ -30,23 +32,24 @@ public class Entities {
     }
 
     public static void init() {
-        registerEntity(EntityPlayer.class, "player");
+        registerEntity(EntityPlayer.class, "player", new RenderPlayer());
+        registerEntity(EntityMovingStone.class, "movingStone", new RenderMovingStone());
     }
 
-    public static void registerEntity(Class<? extends Entity> entityClass, String name) {
-        if (entityClass == null || StringUtil.isNullOrEmpty(name)) {
-            throw new NullPointerException("Unable to register entity: class and name must not be null or empty");
+    public static boolean isEntityRegistered(Class<? extends Entity> entityClass) {
+        return entityMappings.containsKey(entityClass);
+    }
+
+    public static <T extends Entity> void registerEntity(Class<T> entityClass, String name, IRenderEntity<T> renderEntity) {
+        if (entityClass == null || StringUtil.isNullOrEmpty(name) || renderEntity == null) {
+            throw new NullPointerException("Unable to register entity: class name and render must not be null or empty");
         }
         if (entityMappings.containsKey(entityClass) || entityBackMappings.containsKey(name)) {
             throw new RuntimeException("Entity already registered: " + entityClass + ", name " + name);
         }
         entityMappings.put(entityClass, name);
         entityBackMappings.put(name, entityClass);
-
-        Method m = ReflectionUtil.getMethodSilently(entityClass, "loadSprites", ISpriteLoader.class);
-        if (m != null) {
-            ReflectionUtil.invokeStatic(m, SpriteLoader.getInstance());
-        }
+        EntityRenderer.registerRenderEntity(entityClass, renderEntity);
     }
 
     private Entities() {

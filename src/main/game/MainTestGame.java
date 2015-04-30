@@ -4,9 +4,11 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import main.game.entity.EntityMovingStone;
 import main.game.entity.EntityPlayer;
 import main.game.reference.Entities;
 import main.game.reference.GameLib;
+import main.game.render.EntityRenderer;
 import main.game.render.FontRenderer;
 import main.game.render.ISprite;
 import main.game.render.RenderManager;
@@ -155,6 +157,9 @@ public class MainTestGame {
         Tile.init();
         Entities.init();
 
+        Tile.loadTileSprites(SpriteLoader.getInstance());
+        EntityRenderer.loadEntitySprites(SpriteLoader.getInstance());
+
         GameManger.setWorld(new World(64, 64));
 
         GameManger.getWorld().genTestWorld();
@@ -162,6 +167,10 @@ public class MainTestGame {
         GameManger.setPlayer(new EntityPlayer(GameManger.getWorld()));
         GameManger.getPlayer().setPosition(2, 2);
         GameManger.getWorld().spawnEntity(GameManger.getPlayer());
+
+        EntityMovingStone stone1 = new EntityMovingStone(GameManger.getWorld(), 4);
+        stone1.setPosition(4, 1);
+        GameManger.getWorld().spawnEntity(stone1);
 
     }
 

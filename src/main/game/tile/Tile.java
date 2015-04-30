@@ -3,8 +3,7 @@ package main.game.tile;
 import main.game.entity.Entity;
 import main.game.render.ISprite;
 import main.game.render.ISpriteLoader;
-import main.game.render.TileRenderer;
-import main.game.render.impl.SpriteLoader;
+import main.game.render.tile.TileRenderer;
 import main.game.world.World;
 
 public abstract class Tile {
@@ -15,14 +14,15 @@ public abstract class Tile {
     public static final Tile[] TILES = new Tile[Byte.MAX_VALUE];
 
     public static void init() {
-
         air = registerTile(new TileAir());
         stone = registerTile(new TileSimple((byte) 1, "stone", 0));
         grass = registerTile(new TileSimple((byte) 2, "grass", 1));
+    }
 
+    public static void loadTileSprites(ISpriteLoader loader) {
         for (Tile tile : TILES) {
             if (tile != null) {
-                tile.loadSprites(SpriteLoader.getInstance());
+                tile.loadSprites(loader);
             }
         }
     }

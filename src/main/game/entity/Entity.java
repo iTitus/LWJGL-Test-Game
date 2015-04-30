@@ -1,7 +1,6 @@
 package main.game.entity;
 
 import main.game.render.EntityRenderer;
-import main.game.render.ISprite;
 import main.game.util.MathUtil;
 import main.game.util.TileData;
 import main.game.util.Vector2d;
@@ -16,6 +15,7 @@ public abstract class Entity {
     public Entity(World world) {
         this.world = world;
         isDead = false;
+        isSolid = true;
     }
 
     public boolean collides() {
@@ -77,8 +77,6 @@ public abstract class Entity {
         return sizeY;
     }
 
-    public abstract ISprite getSprite();
-
     public World getWorld() {
         return world;
     }
@@ -104,7 +102,7 @@ public abstract class Entity {
     }
 
     public void render() {
-        EntityRenderer.renderStandardEntity(this);
+        EntityRenderer.renderEntity(this);
     }
 
     public void setDead() {
@@ -149,8 +147,12 @@ public abstract class Entity {
         Vector2d original = new Vector2d(dx, dy);
         Vector2d v = original;
         setPosition(posX + v.getX(), posY + v.getY());
+        // FIXME
         if (collides()) {
             do {
+                if (v.getLength() <= 0) {
+                    break;
+                }
                 v = v.div(2);
                 setPosition(posX - v.getX(), posY - v.getY());
             } while (collides());
